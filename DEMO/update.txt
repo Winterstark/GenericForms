@@ -1,0 +1,6 @@
+[UPDATE]
+[VERSION]1.1[/VERSION]
+[FILE]->root\GenericFormsDEMO.exe[/FILE]
+[FILE]->root\update success.txt[/FILE]
+[CHANGELOG]GenericForms DEMO update test.[/CHANGELOG]
+[/UPDATE]
