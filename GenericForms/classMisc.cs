@@ -48,7 +48,9 @@ namespace GenericForms
             }
 
             string prefix = line.Substring(0, delimit);
-            line = line.Substring(delimit + 1);
+
+            if (delimit != line.Length)
+                line = line.Substring(delimit + 1);
 
             if (line.Length > 1 && delimiters.Contains(line[0].ToString()))
                 line = line.Substring(1);

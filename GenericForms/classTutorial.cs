@@ -206,7 +206,7 @@ namespace GenericForms
                         popup.Location = checkBounds(popup, coords.X - target.Width - 12, coords.Y - target.Height / 2 - 5);
                         break;
                 }
-
+                
                 Point b = popup.PointToClient(coords);
                 
                 //draw
@@ -225,11 +225,19 @@ namespace GenericForms
                 {
                     case Selection.Rectangle:
                         coords = popup.PointToClient(target.PointToScreen(Point.Empty));
-                        gfx.DrawRectangle(new Pen(Color.Black, 2), coords.X, coords.Y, target.Width, target.Height);
+
+                        if (target != targetWnd)
+                            gfx.DrawRectangle(new Pen(Color.Black, 2), coords.X, coords.Y, target.Width, target.Height);
+                        else
+                            gfx.DrawRectangle(new Pen(Color.Black, 2), coords.X - 8, coords.Y - 30, target.Width, target.Height);
                         break;
                     case Selection.Circle:
                         coords = popup.PointToClient(target.PointToScreen(new Point(-10, -5)));
-                        gfx.DrawEllipse(new Pen(Color.Black, 2), coords.X, coords.Y, target.Width + 20, target.Height + 10);
+
+                        if (target != targetWnd)
+                            gfx.DrawEllipse(new Pen(Color.Black, 2), coords.X, coords.Y, target.Width + 20, target.Height + 10);
+                        else
+                            gfx.DrawEllipse(new Pen(Color.Black, 2), coords.X, coords.Y - 30, target.Width, target.Height);
 
                         //adjust point b
                         switch (pos)

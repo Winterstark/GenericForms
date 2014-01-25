@@ -110,7 +110,7 @@ namespace GenericForms
                         case "checkbox":
                             CheckBox chkbox = new CheckBox();
 
-                            controls.Add(chkbox);
+                            controls.Add(chkbox);   
 
                             chkbox.Left = 24;
                             chkbox.Top = 28 * y++ + 3;
@@ -161,8 +161,12 @@ namespace GenericForms
                             if (lines[i] != "")
                             {
                                 string chkedItem = "";
-                                if (lines[i] != "")
+                                if (lines[i].Contains('=') || lines[i].Contains(':'))
+                                {
+                                    string temp = Misc.takePrefix(ref lines[i]);
                                     chkedItem = lines[i];
+                                    lines[i] = temp;
+                                }
 
                                 RadioButton rdbutt;
                                 int panW = 0, panH = 0;
@@ -371,6 +375,7 @@ namespace GenericForms
             rdbutt.Top = y;
             rdbutt.AutoSize = true;
             rdbutt.Text = text;
+            rdbutt.Checked = chk;
 
             return rdbutt;
         }
