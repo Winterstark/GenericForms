@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GenericForms;
+using System.IO;
 
 namespace GenericFormsDEMO
 {
@@ -31,7 +32,18 @@ namespace GenericFormsDEMO
 
         private void buttUpdate_Click(object sender, EventArgs e)
         {
-            Updater.Update(1.0, "https://docs.google.com/document/pub?id=12XxGDFe_dEF8XawWLhQPIeMwOKBf-uI6C1dnW8MO9vA", new bool[3] { true, true, true }, true);
+            //check if previous update check was too recent
+            string path = Application.StartupPath + "\\lastUpdateCheck.txt";
+
+            if (File.Exists(path))
+            {
+                StreamReader file = new StreamReader(path);
+                if (DateTime.Now.Subtract(DateTime.Parse(file.ReadLine())).TotalDays < 1)
+                    MessageBox.Show("Update will not succeed because another update took place less than a day ago." + Environment.NewLine + "If you don't want to wait that long delete \"lastUpdateCheck.txt\".");
+                file.Close();
+            }
+
+            Updater.Update(1.0, "https://raw2.github.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/update.txt", new bool[3] { false, !chkAutoDownload.Checked, !chkAutoInstall.Checked }, true);
         }
     }
 }
