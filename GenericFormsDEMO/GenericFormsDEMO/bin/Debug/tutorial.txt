@@ -1,3 +1,4 @@
+SKIP
 "The Tutorial module displays a series of popups.\nEvery popup points to a specific control on the form, or the form itself (like this one)."->this
 "You can remove the triangle at the end of the line."-this
 "You can also display a selection rectangle around the target control."->[buttPrefs]
