@@ -207,6 +207,4 @@ border_width=numbox(1--32):"Border width ="=1
 border_style=radiobuttons:"Border style:"=Solid/Dashed/Dotted=Dashed
 ```
 
-![Screenshot: Preferences - General tab ](http://i.imgur.com/0xmapQI.png)
-![Screenshot: Preferences - Size & Position tab ](http://i.imgur.com/W7pAtua.png)
-![Screenshot: Preferences - Appearance tab ](http://i.imgur.com/huWf6xr.png)
+![Screenshot: Preferences - General tab ](http://i.imgur.com/0xmapQI.png) ![Screenshot: Preferences - Size & Position tab ](http://i.imgur.com/W7pAtua.png) ![Screenshot: Preferences - Appearance tab ](http://i.imgur.com/huWf6xr.png)
