@@ -27,9 +27,9 @@ Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool
    [CHANGELOG]updateDetails[/CHANGELOG]
    [/UPDATE]
    ```
-   updateVersion is the update version number (e.g. 1.01).
-   fileURL is the URL link to a file that needs to be downloaded; file Path is the destination path where the file needs to be located (to specify the main application directory use the keyword "root" - for example: "root\subdir1\subdir2\file.exe"). This line can be repeated indefinitely (to specify multiple files to be updated).
-   updateDetails is the text description of this update that will be shown to the user.
+   * updateVersion is the update version number (e.g. 1.01).
+   * fileURL is the URL link to a file that needs to be downloaded; file Path is the destination path where the file needs to be located (to specify the main application directory use the keyword "root" - for example: "root\subdir1\subdir2\file.exe"). This line can be repeated indefinitely (to specify multiple files to be updated).
+   * updateDetails is the text description of this update that will be shown to the user.
 
 * askPermissions is an array of three bool values, each of which tells the Updater that it needs to ask the user's permission to perform an action.
    The actions are:
