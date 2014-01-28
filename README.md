@@ -138,9 +138,11 @@ Preferences prefs = new Preferences(string configPath, string savePath);
    
    ```
    optionName=combobox:optionPrompt=value1/value2/.../valueN=defaultValue
+   ```
 
    *or*
 
+   ```
    optionName=combobox(list):optionPrompt=value1/value2/.../valueN=defaultValue
    ```
    The difference in these two definitions is that "combobox(list)" accepts only predefined values while "combobox" can accept manual text input from the user.
@@ -150,9 +152,11 @@ Preferences prefs = new Preferences(string configPath, string savePath);
    
    ```
    optionName=radiobuttons:optionPrompt=value1/value2/.../valueN=defaultValue
+   ```
 
    *or*
-   
+
+   ```   
    optionName=radiobuttons(vert):optionPrompt=value1/value2/.../valueN=defaultValue
    ```
    "radiobuttons" organizes the buttons in a single row; "radiobuttons(vert)" organizes them in a single column.
@@ -173,9 +177,11 @@ To show the options window use the following:
 
 ```
 prefs.Show();
+```
 
 *or*
 
+```
 prefs.Show(FormClosedEventHandler endReport);
 ```
 The second way sets an event that fires when the options window closes.
