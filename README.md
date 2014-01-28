@@ -45,9 +45,16 @@ Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool
 
 * If showChangelog is set to True, after installing the update the changelog will be displayed to the user.
 
+Note: If you performed an update and are wondering where this file UpdInst.exe came from and what its purpose is, read this:
+One of the problems with the update process in general is that after you download the new version you need to replace your .exe file with the new one. However, you can't replace the program while it is being run, and if you close the program then who or what will perform the file replace operation? The solution is to run another program (UpdInst), close the main program and wait for UpdInst to perform the following algorithm:
+1. Wait until the main program closes
+2. Move all update files from the download temp. directory to their destinations
+3. Run the newly updated program
+
 
 Tutorial module
 -----------------
+
 Another common feature programs need is a guide or help system to inform new users how to use the program. The Tutorial module displays a series of popup "balloons" that give information about a particular control on the window.
 
 Use the following code to give the user the option of seeing the tutorial for the current window:
@@ -93,3 +100,107 @@ Tutorial tutorial = new Tutorial(string path, Form targetWnd);
    Note: after the user views the tutorial it will be disabled. This is indicated by the first line in the tutorial file, which will be: "SKIP".
    
 * targetWnd lets the Tutorial know what window it needs to point to.
+
+
+Preferences module
+---------------------
+
+Lastly, the Preferences module implements a simple options window. It supports multiple tabs and several types of controls; however, I've come to realize that my programs' options usually require a greater deal of customization and flexibility, so I've abandoned development on this module. It still works and could be viable for very simple programs that don't require anything fancy.
+
+Similarly to the Tutorial module, the Preferences module is defined by a text file which is loaded with the following command:
+
+```
+Preferences prefs = new Preferences(string configPath, string savePath);
+```
+
+* configPath is the path to the text file describing how to construct the Preferences window.
+   The module supports five types of options (controls):
+   1. String (TextBox)
+   
+   ```
+   optionName=textbox:optionPrompt=defaultValue
+   ```
+
+   2. Int (NumericUpDown)
+   
+   ```
+   optionName=numbox(minValue--maxValue):optionPrompt=defaultValue
+   ```
+
+   3. Bool (CheckBox)
+   
+   ```
+   optionName=checkbox:optionPrompt=defaultValue
+   ```
+   Note: defaultValue can be True or False.
+
+   4. Multiple choice (ComboBox)
+   
+   ```
+   optionName=combobox:optionPrompt=value1/value2/.../valueN=defaultValue
+
+   *or*
+
+   optionName=combobox(list):optionPrompt=value1/value2/.../valueN=defaultValue
+   ```
+   The difference in these two definitions is that "combobox(list)" accepts only predefined values while "combobox" can accept manual text input from the user.
+
+
+   5. Multiple choice (RadioButton set)
+   
+   ```
+   optionName=radiobuttons:optionPrompt=value1/value2/.../valueN=defaultValue
+
+   *or*
+   
+   optionName=radiobuttons(vert):optionPrompt=value1/value2/.../valueN=defaultValue
+   ```
+   "radiobuttons" organizes the buttons in a single row; "radiobuttons(vert)" organizes them in a single column.
+
+   If the option prompt or its default value contain characters that would mess up the preferences format (such as ":" or "="), enclosing it within double quotes (") will fix any ambiguity.
+   
+   You can organize options into tabs by writing this:
+
+   ```
+   [tabName]
+   ```
+   All options that follow (until the next tab definition) will belong in this tab.
+
+   
+* savePath is the path to the text file that saves the actual option values. The file does not need to exist; after the user saves his options it'll be created.
+
+To show the options window use the following:
+
+```
+prefs.Show();
+
+*or*
+
+prefs.Show(FormClosedEventHandler endReport);
+```
+The second way sets an event that fires when the options window closes.
+
+The DEMO application uses the following options configuration to simulate the configuration of a rectangle class:
+
+```
+[General]
+name=textbox:"Object name:"=My rectangle
+caption=textbox:"Display label:"=Rectangle 1
+effect=radiobuttons(vert):"Visual effect:"=Glow/Radiance/Bevel/Shadow=Shadow
+
+[Size & Position]
+x=numbox(0--1600):"X ="=5
+y=numbox(0--900):"Y ="=5
+w=numbox(0--100):"Width ="=50
+h=numbox(0--100):"Height ="=50
+
+[Appearance]
+fill=combobox(list):"Fill style:"=Transparent/Semi-transparent/Opaque=Opaque
+border=checkbox:"Draw border"=True
+border_width=numbox(1--32):"Border width ="=1
+border_style=radiobuttons:"Border style:"=Solid/Dashed/Dotted=Dashed
+```
+
+![Screenshot: Preferences - General tab ](http://i.imgur.com/0xmapQI.png)
+![Screenshot: Preferences - Size & Position tab ](http://i.imgur.com/W7pAtua.png)
+![Screenshot: Preferences - Appearance tab ](http://i.imgur.com/huWf6xr.png)
