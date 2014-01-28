@@ -10,7 +10,7 @@ Also included here is a demo project that demonstrates how to use the modules.
 Updater module
 ----------------
 
-[Screenshot: New update available](http://i.imgur.com/B7gzQLk.png)
+![Screenshot: New update available](http://i.imgur.com/B7gzQLk.png)
 
 This module makes updating your projects very easy, automatic, and silent (if the users sets those options). An update can contain more than one file, including the main .exe, and after downloading the program can automatically close itself, install the new version, and run it.
 
