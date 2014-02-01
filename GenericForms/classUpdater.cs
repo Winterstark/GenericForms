@@ -28,7 +28,7 @@ namespace GenericForms
             }
 
             StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\lastUpdateCheck.txt");
-            fWrtr.WriteLine(DateTime.Now);
+            fWrtr.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
             fWrtr.Close();
 
             //check for update
@@ -44,6 +44,10 @@ namespace GenericForms
 
             //parse downloaded page
             pg = getTaggedData(ref pg, "UPDATE").Replace("&gt;", ">").Replace("<p class=\"c0\">", "").Replace("<span>", "").Replace("</span>", "").Replace("</p>", Environment.NewLine).Replace("</div><div>", Environment.NewLine).Replace("<br />", "");
+
+            if (pg == "")
+                return;
+
             double newVersion = double.Parse(getTaggedData(ref pg, "VERSION").Replace('.', ','));
             string changelog = getTaggedData(ref pg, "CHANGELOG");
 
