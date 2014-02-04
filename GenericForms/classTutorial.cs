@@ -76,23 +76,44 @@ namespace GenericForms
                 if (desc == "this")
                     target = targetWnd;
                 else
-                {
-                    target = targetWnd.Controls[desc];
+                    target = findControl(targetWnd, desc);
+            }
 
-                    if (target == null)
-                        foreach (TabControl tabs in targetWnd.Controls.OfType<TabControl>())
+            private Control findControl(Control parent, string desc)
+            {
+                Control target = parent.Controls[desc];
+
+                if (target == null) //control not found? search TabControls
+                    foreach (TabControl tabs in parent.Controls.OfType<TabControl>())
+                    {
+                        foreach (TabPage tab in tabs.TabPages)
                         {
-                            foreach (TabPage tab in tabs.TabPages)
-                                if (tab.Controls.ContainsKey(desc))
-                                {
-                                    target = tab.Controls[desc];
-                                    break;
-                                }
+                            target = findControl(tab, desc);
 
                             if (target != null)
                                 break;
                         }
-                }
+                    }
+
+                if (target == null) //control still not found? search Panels
+                    foreach (Panel panel in parent.Controls.OfType<Panel>())
+                    {
+                        target = findControl(panel, desc);
+
+                        if (target != null)
+                            break;
+                    }
+
+                if (target == null) //control still not found? search GroupBoxes
+                    foreach (GroupBox box in parent.Controls.OfType<GroupBox>())
+                    {
+                        target = findControl(box, desc);
+
+                        if (target != null)
+                            break;
+                    }
+
+                return target;
             }
 
             public void Activate(Form popup)
