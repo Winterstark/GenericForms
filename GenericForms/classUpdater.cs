@@ -36,11 +36,12 @@ namespace GenericForms
                 return;
 
             string pg = dlPage(updateURL);
+
+            while (pg == "not_found" && MessageBox.Show("Update check failed." + Environment.NewLine + Environment.NewLine + "Your Internet connection could be disrupted, or the update server might be down.", Application.ExecutablePath, MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                pg = dlPage(updateURL);
+
             if (pg == "not_found")
-            {
-                MessageBox.Show("Update check failed.");
                 return;
-            }
 
             //parse downloaded page
             pg = getTaggedData(ref pg, "UPDATE").Replace("&gt;", ">").Replace("<p class=\"c0\">", "").Replace("<span>", "").Replace("</span>", "").Replace("</p>", Environment.NewLine).Replace("</div><div>", Environment.NewLine).Replace("<br />", "");
