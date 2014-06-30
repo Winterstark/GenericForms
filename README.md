@@ -45,6 +45,29 @@ Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool
 
 * If showChangelog is set to True, after installing the update the changelog will be displayed to the user.
 
+* You should include the previous update information in all future updates, like this:
+
+   ```
+   [UPDATE]
+   [VERSION]updateVersion 1[/VERSION]
+   [FILE]fileURL->filePath[/FILE]
+   [CHANGELOG]updateDetails 1[/CHANGELOG]
+   [/UPDATE]
+
+   [UPDATE]
+   [VERSION]updateVersion 2[/VERSION]
+   [FILE]fileURL->filePath[/FILE]
+   [CHANGELOG]updateDetails 2[/CHANGELOG]
+   [/UPDATE]
+
+   [UPDATE]
+   [VERSION]updateVersion 3[/VERSION]
+   [FILE]fileURL->filePath[/FILE]
+   [CHANGELOG]updateDetails 3[/CHANGELOG]
+   [/UPDATE]
+   ```
+* This will enable users to update their program no matter what version they are running. The older versions will download all new files (prioritizing the latest release of any multiple-updated file), and the newer versions will only download the latest updated files.
+
 Note: If you performed an update and are wondering where this file UpdInst.exe came from and what its purpose is, read this:
 One of the problems with the update process in general is that after you download the new version you need to replace your .exe file with the new one. However, you can't replace the program while it is being run, and if you close the program then who or what will perform the file replace operation? The solution is to run another program (UpdInst), close the main program and wait for UpdInst to perform the following algorithm:
 1. Wait until the main program closes

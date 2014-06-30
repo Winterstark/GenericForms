@@ -44,26 +44,60 @@ namespace GenericForms
                 return;
 
             //parse downloaded page
-            pg = getTaggedData(ref pg, "UPDATE").Replace("&gt;", ">").Replace("<p class=\"c0\">", "").Replace("<span>", "").Replace("</span>", "").Replace("</p>", Environment.NewLine).Replace("</div><div>", Environment.NewLine).Replace("<br />", "");
+            string update = getUpdateInformation(ref pg);
+            
+            Dictionary<string, string> updatedFiles = new Dictionary<string, string>();
+            string changelog = "";
+            double newVersion = -1;
 
-            if (pg == "")
+            if (update == "")
                 return;
 
-            double newVersion = double.Parse(getTaggedData(ref pg, "VERSION").Replace('.', ','));
-            string changelog = getTaggedData(ref pg, "CHANGELOG");
-
-            List<string> links = new List<string>();
-            string link = getTaggedData(ref pg, "FILE");
-
-            while (link != "")
+            while (update != "")
             {
-                links.Add(link);
-                link = getTaggedData(ref pg, "FILE");
+                newVersion = double.Parse(getTaggedData(ref update, "VERSION").Replace('.', ','));
+
+                if (newVersion > currVersion) //only get information from newer versions than current
+                {
+                    //add changelog information
+                    changelog += (changelog != "" ? Environment.NewLine : "") + Environment.NewLine + "v" + newVersion.ToString().Replace(',', '.') + " changelog::" + Environment.NewLine + getTaggedData(ref update, "CHANGELOG");
+
+                    //parse links to updated files
+                    string link = getTaggedData(ref update, "FILE");
+
+                    while (link != "")
+                    {
+                        if (link.Contains("->"))
+                        {
+                            string dlURL = link.Substring(0, link.IndexOf("->"));
+                            string dest = link.Substring(link.IndexOf("->") + 2);
+
+                            if (updatedFiles.ContainsValue(dest)) //remove existing updatedFiles (from previous versions)
+                                for (int i = 0; i < updatedFiles.Count; i++)
+                                    if (updatedFiles.ElementAt(i).Value == dest)
+                                    {
+                                        updatedFiles.Remove(updatedFiles.ElementAt(i).Key);
+                                        break;
+                                    }
+
+                            updatedFiles.Add(dlURL, dest);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Update check failed.");
+                            return;
+                        }
+
+                        link = getTaggedData(ref update, "FILE");
+                    }
+                }
+
+                update = getUpdateInformation(ref pg);
             }
-            
-            if (newVersion <= currVersion)
+
+            if (newVersion == -1 || updatedFiles.Count == 0)
                 return;
-            
+
             //download update
             if (askPermissions[1] && MessageBox.Show("Download version v_" + newVersion.ToString().Replace(',', '.') + "?" + Environment.NewLine + changelog, "New Update Available", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
                 return;
@@ -73,19 +107,10 @@ namespace GenericForms
                 tempDir += "_1";
             Directory.CreateDirectory(tempDir);
             
-            string dlURL, dest;
-            foreach (string l in links)
+            foreach (var updFile in updatedFiles)
             {
-                if (l.Contains("->"))
-                {
-                    dlURL = l.Substring(0, l.IndexOf("->"));
-                    dest = l.Substring(l.IndexOf("->") + 2).Replace("root", tempDir);
-                }
-                else
-                {
-                    MessageBox.Show("Update download failed.");
-                    return;
-                }
+                string dlURL = updFile.Key;
+                string dest = updFile.Value.Replace("root", tempDir); ;
 
                 //ensure dest dir exists
                 string destDir = dest.Substring(0, dest.LastIndexOf('\\'));
@@ -167,6 +192,11 @@ namespace GenericForms
             }
 
             return true;
+        }
+
+        private static string getUpdateInformation(ref string pg)
+        {
+            return getTaggedData(ref pg, "UPDATE").Replace("&gt;", ">").Replace("<p class=\"c0\">", "").Replace("<span>", "").Replace("</span>", "").Replace("</p>", Environment.NewLine).Replace("</div><div>", Environment.NewLine).Replace("<br />", "");
         }
 
         private static string getTaggedData(ref string page, string tag)
