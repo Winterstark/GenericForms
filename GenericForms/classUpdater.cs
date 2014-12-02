@@ -13,35 +13,59 @@ namespace GenericForms
     {
         private const string UPD_INST = "https://docs.google.com/uc?export=download&id=0B1jvFQ35nZDBZm5FSktmbEM4UTg";
 
+        private static DateTime lastCheck;
+        private static string updateURL;
+        private static int permissionLevel, daysSinceLastSuccess;
+        private static bool showChangelog;
 
-        public static void Update(double currVersion, string updateURL, bool[] askPermissions, bool showChangelog)
+
+        public static void Update(double currVersion, string defaultUpdateURL)
         {
-            //ensure enough time passed since last check
-            if (File.Exists(Application.StartupPath + "\\lastUpdateCheck.txt"))
+            //load update options
+            if (File.Exists(Application.StartupPath + "\\updateConfig.txt"))
             {
-                StreamReader fRdr = new StreamReader(Application.StartupPath + "\\lastUpdateCheck.txt");
-                DateTime lastCheck = DateTime.Parse(fRdr.ReadLine());
+                StreamReader fRdr = new StreamReader(Application.StartupPath + "\\updateConfig.txt");
+                updateURL = fRdr.ReadLine();
+                lastCheck = DateTime.Parse(fRdr.ReadLine());
+                daysSinceLastSuccess = int.Parse(fRdr.ReadLine());
+                permissionLevel = int.Parse(fRdr.ReadLine());
+                showChangelog = bool.Parse(fRdr.ReadLine());
                 fRdr.Close();
-
-                if (DateTime.Now.Subtract(lastCheck).TotalDays < 1)
-                    return;
+            }
+            else
+            {
+                updateURL = defaultUpdateURL;
+                lastCheck = DateTime.Now.AddDays(-2);
+                daysSinceLastSuccess = 0;
+                permissionLevel = 0;
+                showChangelog = true;
             }
 
-            StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\lastUpdateCheck.txt");
-            fWrtr.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
-            fWrtr.Close();
+            //skip if already checked for update today
+            if (DateTime.Now.Subtract(lastCheck).TotalDays < 1)
+            {
+                SaveConfig(true, "");
+                return;
+            }
+
+            //set askPermission flags
+            bool[] askPermissions = {true, true, true};
+            for (int i = 0; i < Math.Min(3, permissionLevel); i++)
+                askPermissions[i] = false;
 
             //check for update
             if (askPermissions[0] && MessageBox.Show("Check for updates?", "Updater", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            {
+                SaveConfig(true, "");
                 return;
+            }
 
             string pg = dlPage(updateURL);
-
-            while (pg == "not_found" && MessageBox.Show("Update check failed." + Environment.NewLine + Environment.NewLine + "Your Internet connection could be disrupted, or the update server might be down.", Application.ExecutablePath, MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                pg = dlPage(updateURL);
-
             if (pg == "not_found")
+            {
+                SaveConfig(false, "Can't download update file.");
                 return;
+            }
 
             //parse downloaded page
             string update = getUpdateInformation(ref pg);
@@ -51,7 +75,10 @@ namespace GenericForms
             double newVersion = -1;
 
             if (update == "")
+            {
+                SaveConfig(false, "Error while processing update file.");
                 return;
+            }
 
             while (update != "")
             {
@@ -84,7 +111,7 @@ namespace GenericForms
                         }
                         else
                         {
-                            MessageBox.Show("Update check failed.");
+                            SaveConfig(false, "Corrupted update file.");
                             return;
                         }
 
@@ -96,17 +123,23 @@ namespace GenericForms
             }
 
             if (newVersion == -1 || updatedFiles.Count == 0)
+            {
+                SaveConfig(false, "Error while processing update information.");
                 return;
+            }
 
             //download update
             if (askPermissions[1] && MessageBox.Show("Download version v_" + newVersion.ToString().Replace(',', '.') + "?" + Environment.NewLine + changelog, "New Update Available", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            {
+                SaveConfig(true, "");
                 return;
+            }
 
             string tempDir = Application.StartupPath + "\\new_update_temp";
             while (Directory.Exists(tempDir))
                 tempDir += "_1";
             Directory.CreateDirectory(tempDir);
-            
+
             foreach (var updFile in updatedFiles)
             {
                 string dlURL = updFile.Key;
@@ -120,16 +153,17 @@ namespace GenericForms
                 //dl file
                 if (!dlFile(dlURL, dest))
                 {
-                    MessageBox.Show("Update download failed.");
-                    MessageBox.Show(dlURL);
-                    MessageBox.Show(dest);
+                    SaveConfig(false, "Error while downloading updated files.");
                     return;
                 }
             }
 
             //install update
             if (askPermissions[2] && MessageBox.Show("Install update?" + Environment.NewLine + changelog, "Downloaded New Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            {
+                SaveConfig(true, "");
                 return;
+            }
 
             if (File.Exists("updatesuccess.txt"))
                 File.Delete("updatesuccess.txt");
@@ -143,7 +177,7 @@ namespace GenericForms
             if (!File.Exists("UpdInst.exe"))
                 if (!dlFile(UPD_INST, "UpdInst.exe"))
                 {
-                    MessageBox.Show("Update download failed. Missing UpdInst.exe.");
+                    SaveConfig(false, "Can't download UpdInst.exe.");
                     return;
                 }
 
@@ -153,7 +187,29 @@ namespace GenericForms
             instInfo.WindowStyle = ProcessWindowStyle.Hidden;
             Process.Start(instInfo);
 
-            Application.Exit();
+            SaveConfig(true, "");
+        }
+
+        private static void SaveConfig(bool success, string error)
+        {
+            if (!success)
+            {
+                daysSinceLastSuccess++;
+                if (daysSinceLastSuccess == 7)
+                {
+                    string progName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+                    MessageBox.Show(progName + " hasn't been able to check for updates this week." + Environment.NewLine + Environment.NewLine + "This usually means that the update infrastructure is broken and you need to download the next update manually by visiting this program's homepage." + Environment.NewLine + Environment.NewLine + "Error message: " + error, "Update check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    daysSinceLastSuccess = 0;
+                }
+            }
+
+            StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\updateConfig.txt");
+            fWrtr.WriteLine(updateURL);
+            fWrtr.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+            fWrtr.WriteLine(daysSinceLastSuccess);
+            fWrtr.WriteLine(permissionLevel);
+            fWrtr.WriteLine(showChangelog);
+            fWrtr.Close();
         }
 
         private static string dlPage(string url)

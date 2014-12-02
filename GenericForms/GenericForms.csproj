@@ -46,7 +46,18 @@
     <Compile Include="classPreferences.cs" />
     <Compile Include="classTutorial.cs" />
     <Compile Include="classUpdater.cs" />
+    <Compile Include="formUpdateConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formUpdateConfig.Designer.cs">
+      <DependentUpon>formUpdateConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="formUpdateConfig.resx">
+      <DependentUpon>formUpdateConfig.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
