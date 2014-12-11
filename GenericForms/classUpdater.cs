@@ -49,7 +49,7 @@ namespace GenericForms
             //skip if already checked for update today
             if (!forceCheck && DateTime.Now.Subtract(lastCheck).TotalDays < 1)
             {
-                SaveConfig(true, "");
+                SaveConfig(true, true, "");
                 return;
             }
 
@@ -61,19 +61,19 @@ namespace GenericForms
             //check for update
             if (!forceCheck && askPermissions[0] && MessageBox.Show("Check for updates?", "Updater", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
-                SaveConfig(true, "");
+                SaveConfig(true, true, "");
                 return;
             }
 
             string pg = dlPage(updateURL);
             if (pg == "not_found")
             {
-                SaveConfig(false, "Can't download update file.");
+                SaveConfig(false, false, "Can't download update file.");
                 return;
             }
             else if (pg == "no update")
             {
-                SaveConfig(true, "");
+                SaveConfig(false, true, "");
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace GenericForms
 
             if (update == "")
             {
-                SaveConfig(false, "Error while processing update file.");
+                SaveConfig(false, false, "Error while processing update file.");
                 return;
             }
 
@@ -121,7 +121,7 @@ namespace GenericForms
                         }
                         else
                         {
-                            SaveConfig(false, "Corrupted update file.");
+                            SaveConfig(false, false, "Corrupted update file.");
                             return;
                         }
 
@@ -134,14 +134,14 @@ namespace GenericForms
 
             if (newVersion == -1 || updatedFiles.Count == 0)
             {
-                SaveConfig(false, "Error while processing update information.");
+                SaveConfig(false, false, "Error while processing update information.");
                 return;
             }
 
             //download update
             if (askPermissions[1] && MessageBox.Show("Download version v_" + newVersion.ToString().Replace(',', '.') + "?" + Environment.NewLine + changelog, "New Update Available", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
-                SaveConfig(true, "");
+                SaveConfig(false, true, "");
                 return;
             }
 
@@ -163,7 +163,7 @@ namespace GenericForms
                 //dl file
                 if (!dlFile(dlURL, dest))
                 {
-                    SaveConfig(false, "Error while downloading updated files.");
+                    SaveConfig(false, false, "Error while downloading updated files.");
                     return;
                 }
             }
@@ -171,7 +171,7 @@ namespace GenericForms
             //install update
             if (askPermissions[2] && MessageBox.Show("Install update?" + Environment.NewLine + changelog, "Downloaded New Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
-                SaveConfig(true, "");
+                SaveConfig(false, true, "");
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace GenericForms
             if (!File.Exists("UpdInst.exe"))
                 if (!dlFile(UPD_INST, "UpdInst.exe"))
                 {
-                    SaveConfig(false, "Can't download UpdInst.exe.");
+                    SaveConfig(false, false, "Can't download UpdInst.exe.");
                     return;
                 }
 
@@ -197,23 +197,26 @@ namespace GenericForms
             instInfo.WindowStyle = ProcessWindowStyle.Hidden;
             Process.Start(instInfo);
 
-            SaveConfig(true, "");
+            SaveConfig(false, true, "");
         }
 
-        private static void SaveConfig(bool success, string error)
+        private static void SaveConfig(bool skippedBeforeChecking, bool success, string error)
         {
-            if (!success)
+            if (!skippedBeforeChecking)
             {
-                daysSinceLastSuccess++;
-                if (daysSinceLastSuccess == 7)
+                if (!success)
                 {
-                    string progName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
-                    MessageBox.Show(progName + " hasn't been able to check for updates this week." + Environment.NewLine + Environment.NewLine + "This usually means that the update infrastructure is broken and you need to download the next update manually by visiting this program's homepage." + Environment.NewLine + Environment.NewLine + "Error message: " + error, "Update check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    daysSinceLastSuccess = 0;
+                    daysSinceLastSuccess++;
+                    if (daysSinceLastSuccess == 7)
+                    {
+                        string progName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+                        MessageBox.Show(progName + " hasn't been able to check for updates this week." + Environment.NewLine + Environment.NewLine + "This usually means that the update infrastructure is broken and you need to download the next update manually by visiting this program's homepage." + Environment.NewLine + Environment.NewLine + "Error message: " + error, "Update check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        daysSinceLastSuccess = 0;
+                    }
                 }
+                else
+                    daysSinceLastSuccess = 0;
             }
-            else
-                daysSinceLastSuccess = 0;
 
             StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\updateConfig.txt");
             fWrtr.WriteLine(updateURL);
