@@ -39,7 +39,10 @@ Updater.Update(double currVersion, string updateURL);
 
    Note: If the there is no update the text file's contents should be: "no update".
 
-NEW UPDATE NOTE: Updater.Update() no longer uses askPermissions and showChangelog as paramters. These settings are now automatically managed by the Updater through a new Configuration dialog. You should incorporate the dialog as a "Open Update Configuration" button in your program's Options window.
+NEW UPDATE NOTE: Updater.Update() no longer uses askPermissions and showChangelog as paramters. These settings are now automatically managed by the Updater through a new Configuration dialog. You should incorporate the dialog as a "Open Update Configuration" button in your program's Options window so the user can modify the configuration.
+
+![Screemshot: Update configuration window](http://i.imgur.com/v25G26j.png)
+
 
 You should include the previous update information in all future updates, like this:
 
