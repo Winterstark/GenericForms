@@ -26,6 +26,8 @@ namespace GenericForms
 
         public static void Update(double currVersion, string defaultUpdateURL, bool forceCheck)
         {
+            string progName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
+
             //load update options
             if (File.Exists(Application.StartupPath + "\\updateConfig.txt"))
             {
@@ -59,7 +61,7 @@ namespace GenericForms
                 askPermissions[i] = false;
 
             //check for update
-            if (!forceCheck && askPermissions[0] && MessageBox.Show("Check for updates?", "Updater", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            if (!forceCheck && askPermissions[0] && MessageBox.Show("Check for updates?", progName, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
                 SaveConfig(true, true, "");
                 return;
@@ -139,7 +141,7 @@ namespace GenericForms
             }
 
             //download update
-            if (askPermissions[1] && MessageBox.Show("Download version v_" + newVersion.ToString().Replace(',', '.') + "?" + Environment.NewLine + changelog, "New Update Available", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            if (askPermissions[1] && MessageBox.Show("Download version v_" + newVersion.ToString().Replace(',', '.') + "?" + Environment.NewLine + changelog, progName + " - New Update Available", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
                 SaveConfig(false, true, "");
                 return;
@@ -169,7 +171,7 @@ namespace GenericForms
             }
 
             //install update
-            if (askPermissions[2] && MessageBox.Show("Install update?" + Environment.NewLine + changelog, "Downloaded New Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            if (askPermissions[2] && MessageBox.Show("Install update?" + Environment.NewLine + changelog, progName + " - Downloaded New Update", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
                 SaveConfig(false, true, "");
                 return;
