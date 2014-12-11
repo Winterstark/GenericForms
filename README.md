@@ -12,12 +12,12 @@ Updater module
 
 ![Screenshot: New update available](http://i.imgur.com/B7gzQLk.png)
 
-This module makes updating your projects very easy, automatic, and silent (if the users sets those options). An update can contain more than one file, including the main .exe, and after downloading the program can automatically close itself, install the new version, and run it.
+This module makes updating your projects very easy, automatic, and silent (if the user sets those options). An update can contain more than one file, including the main .exe, and after downloading the program can automatically close itself, install the new version, and run it.
 
 Use the following code when you want to check for a new version (typically when the program starts):
 
 ```
-Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool showChangelog);
+Updater.Update(double currVersion, string updateURL);
 ```
 
 * currVersion is the current program version (e.g. 1.03). If the Updater discovers a greater version it will download the update.
@@ -32,20 +32,16 @@ Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool
    [CHANGELOG]updateDetails[/CHANGELOG]
    [/UPDATE]
    ```
+
    * updateVersion is the update version number (e.g. 1.01).
    * fileURL is the URL link to a file that needs to be downloaded; file Path is the destination path where the file needs to be located (to specify the main application directory use the keyword "root" - for example: "root\subdir1\subdir2\file.exe"). This line can be repeated indefinitely (to specify multiple files to be updated).
    * updateDetails is the text description of this update that will be shown to the user.
 
-* askPermissions is an array of three bool values, each of which tells the Updater that it needs to ask the user's permission to perform an action.
-   The actions are:
-   1. Check for updates
-   2. Download update
-   3. Install update
-   If a value is set to False then that action will be performed automatically; otherwise, the user will have to give manual permission in a message box.
+   Note: If the there is no update the text file's contents should be: "no update".
 
-* If showChangelog is set to True, after installing the update the changelog will be displayed to the user.
+NEW UPDATE NOTE: Updater.Update() no longer uses askPermissions and showChangelog as paramters. These settings are now automatically managed by the Updater through a new Configuration dialog. You should incorporate the dialog as a "Open Update Configuration" button in your program's Options window.
 
-* You should include the previous update information in all future updates, like this:
+You should include the previous update information in all future updates, like this:
 
    ```
    [UPDATE]
@@ -66,7 +62,7 @@ Updater.Update(double currVersion, string updateURL, bool[] askPermissions, bool
    [CHANGELOG]updateDetails 3[/CHANGELOG]
    [/UPDATE]
    ```
-* This will enable users to update their program no matter what version they are running. The older versions will download all new files (prioritizing the latest release of any multiple-updated file), and the newer versions will only download the latest updated files.
+This will enable users to update their program no matter what version they are running. The older versions will download all new files (prioritizing the latest release of any multiple-updated file), and the newer versions will only download the latest updated files.
 
 Note: If you performed an update and are wondering where this file UpdInst.exe came from and what its purpose is, read this:
 One of the problems with the update process in general is that after you download the new version you need to replace your .exe file with the new one. However, you can't replace the program while it is being run, and if you close the program then who or what will perform the file replace operation? The solution is to run another program (UpdInst), close the main program and wait for UpdInst to perform the following algorithm:
