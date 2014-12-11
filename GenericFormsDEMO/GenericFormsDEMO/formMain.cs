@@ -14,6 +14,12 @@ namespace GenericFormsDEMO
 {
     public partial class formMain : Form
     {
+        const double VERSION = 1.0;
+        const string UPDATE_URL = "https://raw.githubusercontent.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/update.txt";
+
+        UpdateConfig updateConfig;
+
+
         public formMain()
         {
             InitializeComponent();
@@ -33,17 +39,30 @@ namespace GenericFormsDEMO
         private void buttUpdate_Click(object sender, EventArgs e)
         {
             //check if previous update check was too recent
-            string path = Application.StartupPath + "\\lastUpdateCheck.txt";
+            string path = Application.StartupPath + "\\updateConfig.txt";
 
             if (File.Exists(path))
             {
                 StreamReader file = new StreamReader(path);
-                if (DateTime.Now.Subtract(DateTime.Parse(file.ReadLine())).TotalDays < 1)
-                    MessageBox.Show("Update will not succeed because another update took place less than a day ago." + Environment.NewLine + "If you don't want to wait that long delete \"lastUpdateCheck.txt\".");
+                string line = file.ReadLine(); //skip url
+                line = file.ReadLine(); //read datetime of last check
+
+                if (DateTime.Now.Subtract(DateTime.Parse(line)).TotalDays < 1)
+                    MessageBox.Show("Update will not succeed because another update took place less than a day ago." + Environment.NewLine + "If you don't want to wait that long delete \"updateConfig.txt\".");
                 file.Close();
             }
 
-            Updater.Update(1.0, "https://raw2.github.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/update.txt", new bool[3] { false, !chkAutoDownload.Checked, !chkAutoInstall.Checked }, true);
+            Updater.Update(VERSION, UPDATE_URL);
+        }
+
+        private void buttUpdateConfig_Click(object sender, EventArgs e)
+        {
+            if (updateConfig == null || updateConfig.IsDisposed)
+            {
+                updateConfig = new UpdateConfig();
+                updateConfig.DefaultUpdateURL = UPDATE_URL;
+                updateConfig.Show();
+            }
         }
     }
 }

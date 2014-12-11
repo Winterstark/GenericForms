@@ -31,8 +31,7 @@
             this.buttPrefs = new System.Windows.Forms.Button();
             this.lblCurVer = new System.Windows.Forms.Label();
             this.buttUpdate = new System.Windows.Forms.Button();
-            this.chkAutoDownload = new System.Windows.Forms.CheckBox();
-            this.chkAutoInstall = new System.Windows.Forms.CheckBox();
+            this.buttUpdateConfig = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttPrefs
@@ -64,33 +63,22 @@
             this.buttUpdate.UseVisualStyleBackColor = true;
             this.buttUpdate.Click += new System.EventHandler(this.buttUpdate_Click);
             // 
-            // chkAutoDownload
+            // buttUpdateConfig
             // 
-            this.chkAutoDownload.AutoSize = true;
-            this.chkAutoDownload.Location = new System.Drawing.Point(48, 181);
-            this.chkAutoDownload.Name = "chkAutoDownload";
-            this.chkAutoDownload.Size = new System.Drawing.Size(142, 17);
-            this.chkAutoDownload.TabIndex = 3;
-            this.chkAutoDownload.Text = "Download wihout asking";
-            this.chkAutoDownload.UseVisualStyleBackColor = true;
-            // 
-            // chkAutoInstall
-            // 
-            this.chkAutoInstall.AutoSize = true;
-            this.chkAutoInstall.Location = new System.Drawing.Point(57, 204);
-            this.chkAutoInstall.Name = "chkAutoInstall";
-            this.chkAutoInstall.Size = new System.Drawing.Size(124, 17);
-            this.chkAutoInstall.TabIndex = 3;
-            this.chkAutoInstall.Text = "Install without asking";
-            this.chkAutoInstall.UseVisualStyleBackColor = true;
+            this.buttUpdateConfig.Location = new System.Drawing.Point(32, 198);
+            this.buttUpdateConfig.Name = "buttUpdateConfig";
+            this.buttUpdateConfig.Size = new System.Drawing.Size(174, 23);
+            this.buttUpdateConfig.TabIndex = 3;
+            this.buttUpdateConfig.Text = "Update Configuration";
+            this.buttUpdateConfig.UseVisualStyleBackColor = true;
+            this.buttUpdateConfig.Click += new System.EventHandler(this.buttUpdateConfig_Click);
             // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(248, 326);
-            this.Controls.Add(this.chkAutoInstall);
-            this.Controls.Add(this.chkAutoDownload);
+            this.Controls.Add(this.buttUpdateConfig);
             this.Controls.Add(this.buttUpdate);
             this.Controls.Add(this.lblCurVer);
             this.Controls.Add(this.buttPrefs);
@@ -109,8 +97,7 @@
         private System.Windows.Forms.Button buttPrefs;
         private System.Windows.Forms.Label lblCurVer;
         private System.Windows.Forms.Button buttUpdate;
-        private System.Windows.Forms.CheckBox chkAutoDownload;
-        private System.Windows.Forms.CheckBox chkAutoInstall;
+        private System.Windows.Forms.Button buttUpdateConfig;
     }
 }
 
