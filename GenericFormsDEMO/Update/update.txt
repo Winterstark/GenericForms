@@ -1,6 +1,6 @@
 [UPDATE]
 [VERSION]1.1[/VERSION]
-[FILE]https://raw2.github.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/GenericFormsDEMO.exe->root\GenericFormsDEMO.exe[/FILE]
-[FILE]https://raw2.github.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/random%20update%20file.txt->root\random update file.txt[/FILE]
+[FILE]https://raw.githubusercontent.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/GenericFormsDEMO.exe->root\GenericFormsDEMO.exe[/FILE]
+[FILE]https://raw.githubusercontent.com/Winterstark/GenericForms/master/GenericFormsDEMO/Update/random%20update%20file.txt->root\random update file.txt[/FILE]
 [CHANGELOG]GenericForms DEMO update test.[/CHANGELOG]
 [/UPDATE]
