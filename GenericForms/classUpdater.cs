@@ -21,6 +21,11 @@ namespace GenericForms
 
         public static void Update(double currVersion, string defaultUpdateURL)
         {
+            Update(currVersion, defaultUpdateURL, false);
+        }
+
+        public static void Update(double currVersion, string defaultUpdateURL, bool forceCheck)
+        {
             //load update options
             if (File.Exists(Application.StartupPath + "\\updateConfig.txt"))
             {
@@ -42,7 +47,7 @@ namespace GenericForms
             }
 
             //skip if already checked for update today
-            if (DateTime.Now.Subtract(lastCheck).TotalDays < 1)
+            if (!forceCheck && DateTime.Now.Subtract(lastCheck).TotalDays < 1)
             {
                 SaveConfig(true, "");
                 return;
@@ -54,7 +59,7 @@ namespace GenericForms
                 askPermissions[i] = false;
 
             //check for update
-            if (askPermissions[0] && MessageBox.Show("Check for updates?", "Updater", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
+            if (!forceCheck && askPermissions[0] && MessageBox.Show("Check for updates?", "Updater", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
             {
                 SaveConfig(true, "");
                 return;
@@ -64,6 +69,11 @@ namespace GenericForms
             if (pg == "not_found")
             {
                 SaveConfig(false, "Can't download update file.");
+                return;
+            }
+            else if (pg == "no update")
+            {
+                SaveConfig(true, "");
                 return;
             }
 
@@ -202,6 +212,8 @@ namespace GenericForms
                     daysSinceLastSuccess = 0;
                 }
             }
+            else
+                daysSinceLastSuccess = 0;
 
             StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\updateConfig.txt");
             fWrtr.WriteLine(updateURL);
