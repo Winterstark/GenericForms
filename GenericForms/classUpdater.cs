@@ -200,6 +200,7 @@ namespace GenericForms
             Process.Start(instInfo);
 
             SaveConfig(false, true, "");
+            Application.Exit();
         }
 
         private static void SaveConfig(bool skippedBeforeChecking, bool success, string error)
