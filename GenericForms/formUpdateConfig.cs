@@ -12,11 +12,59 @@ namespace GenericForms
 {
     public partial class UpdateConfig : Form
     {
+        public string DefaultUpdateURL = "";
+        public double CurrentVersion = 0.0;
+
         DateTime lastCheck;
         string updateURL, configPath;
         int permissionLevel, daysSinceLastSuccess;
         bool showChangelog;
 
+
+        void loadConfig()
+        {
+            configPath = Application.StartupPath + "\\updateConfig.txt";
+
+            if (File.Exists(configPath))
+            {
+                StreamReader fRdr = new StreamReader(Application.StartupPath + "\\updateConfig.txt");
+                updateURL = fRdr.ReadLine();
+                lastCheck = DateTime.Parse(fRdr.ReadLine());
+                daysSinceLastSuccess = int.Parse(fRdr.ReadLine());
+                permissionLevel = int.Parse(fRdr.ReadLine());
+                showChangelog = bool.Parse(fRdr.ReadLine());
+                fRdr.Close();
+
+                lblLastCheck.Text = "Last check: " + lastCheck.ToString();
+                if (daysSinceLastSuccess > 0)
+                    lblLastCheck.Text += " - failed (" + daysSinceLastSuccess + " days in a row)";
+            }
+            else
+            {
+                updateURL = DefaultUpdateURL;
+                lastCheck = DateTime.Now.AddDays(-2);
+                lblLastCheck.Text = "Last check: never / unknown.";
+                daysSinceLastSuccess = 0;
+                permissionLevel = 0;
+                showChangelog = true;
+            }
+
+            txtUpdateURL.Text = updateURL;
+            trackUpdate.Value = permissionLevel;
+            refreshUpdateNotifLabel();
+            chkShowChangelog.Checked = showChangelog;
+        }
+
+        void saveConfig()
+        {
+            StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\updateConfig.txt");
+            fWrtr.WriteLine(txtUpdateURL.Text);
+            fWrtr.WriteLine(lastCheck.ToString("yyyy-MM-dd HH:mm"));
+            fWrtr.WriteLine(daysSinceLastSuccess);
+            fWrtr.WriteLine(trackUpdate.Value);
+            fWrtr.WriteLine(chkShowChangelog.Checked);
+            fWrtr.Close();
+        }
 
         void refreshUpdateNotifLabel()
         {
@@ -53,23 +101,7 @@ namespace GenericForms
 
         private void UpdateConfig_Load(object sender, EventArgs e)
         {
-            configPath = Application.StartupPath + "\\updateConfig.txt";
-
-            if (File.Exists(configPath))
-            {
-                StreamReader fRdr = new StreamReader(Application.StartupPath + "\\updateConfig.txt");
-                updateURL = fRdr.ReadLine();
-                lastCheck = DateTime.Parse(fRdr.ReadLine());
-                daysSinceLastSuccess = int.Parse(fRdr.ReadLine());
-                permissionLevel = int.Parse(fRdr.ReadLine());
-                showChangelog = bool.Parse(fRdr.ReadLine());
-                fRdr.Close();
-            }
-
-            txtUpdateURL.Text = updateURL;
-            trackUpdate.Value = permissionLevel;
-            refreshUpdateNotifLabel();
-            chkShowChangelog.Checked = showChangelog;
+            loadConfig();
         }
 
         private void txtUpdateURL_TextChanged(object sender, EventArgs e)
@@ -88,20 +120,26 @@ namespace GenericForms
             checkForChanges();
         }
 
+        private void buttCheckForUpdates_Click(object sender, EventArgs e)
+        {
+            saveConfig();
+
+            lblLastCheck.Text = "Updating, please wait...";
+            this.Refresh();
+
+            Updater.Update(CurrentVersion, txtUpdateURL.Text, true);
+            
+            loadConfig();
+            checkForChanges();
+        }
+
         private void buttSave_Click(object sender, EventArgs e)
         {
-            StreamWriter fWrtr = new StreamWriter(Application.StartupPath + "\\updateConfig.txt");
-            fWrtr.WriteLine(txtUpdateURL.Text);
-            fWrtr.WriteLine(lastCheck.ToString("yyyy-MM-dd HH:mm"));
-            fWrtr.WriteLine(daysSinceLastSuccess);
-            fWrtr.WriteLine(trackUpdate.Value);
-            fWrtr.WriteLine(chkShowChangelog.Checked);
-            fWrtr.Close();
-
+            saveConfig();
             this.Close();
         }
 
-        private void buttCancel_Click(object sender, EventArgs e)
+        private void buttClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }

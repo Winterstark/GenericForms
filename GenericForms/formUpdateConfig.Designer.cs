@@ -35,7 +35,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.trackUpdate = new System.Windows.Forms.TrackBar();
             this.buttSave = new System.Windows.Forms.Button();
-            this.buttCancel = new System.Windows.Forms.Button();
+            this.buttClose = new System.Windows.Forms.Button();
+            this.lblLastCheck = new System.Windows.Forms.Label();
+            this.buttCheckForUpdates = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackUpdate)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,7 +61,7 @@
             // chkShowChangelog
             // 
             this.chkShowChangelog.AutoSize = true;
-            this.chkShowChangelog.Location = new System.Drawing.Point(168, 166);
+            this.chkShowChangelog.Location = new System.Drawing.Point(168, 126);
             this.chkShowChangelog.Name = "chkShowChangelog";
             this.chkShowChangelog.Size = new System.Drawing.Size(166, 17);
             this.chkShowChangelog.TabIndex = 13;
@@ -70,7 +72,7 @@
             // lblUpdateNotifications
             // 
             this.lblUpdateNotifications.AutoSize = true;
-            this.lblUpdateNotifications.Location = new System.Drawing.Point(362, 92);
+            this.lblUpdateNotifications.Location = new System.Drawing.Point(362, 75);
             this.lblUpdateNotifications.Name = "lblUpdateNotifications";
             this.lblUpdateNotifications.Size = new System.Drawing.Size(60, 13);
             this.lblUpdateNotifications.TabIndex = 15;
@@ -79,7 +81,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(58, 92);
+            this.label9.Location = new System.Drawing.Point(58, 75);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(104, 13);
             this.label9.TabIndex = 14;
@@ -88,7 +90,7 @@
             // trackUpdate
             // 
             this.trackUpdate.BackColor = System.Drawing.SystemColors.Control;
-            this.trackUpdate.Location = new System.Drawing.Point(168, 92);
+            this.trackUpdate.Location = new System.Drawing.Point(168, 75);
             this.trackUpdate.Maximum = 3;
             this.trackUpdate.Name = "trackUpdate";
             this.trackUpdate.Size = new System.Drawing.Size(188, 45);
@@ -98,30 +100,51 @@
             // buttSave
             // 
             this.buttSave.Enabled = false;
-            this.buttSave.Location = new System.Drawing.Point(168, 243);
+            this.buttSave.Location = new System.Drawing.Point(168, 250);
             this.buttSave.Name = "buttSave";
-            this.buttSave.Size = new System.Drawing.Size(166, 36);
+            this.buttSave.Size = new System.Drawing.Size(180, 36);
             this.buttSave.TabIndex = 16;
-            this.buttSave.Text = "Save Configuration";
+            this.buttSave.Text = "Save and Close";
             this.buttSave.UseVisualStyleBackColor = true;
             this.buttSave.Click += new System.EventHandler(this.buttSave_Click);
             // 
-            // buttCancel
+            // buttClose
             // 
-            this.buttCancel.Location = new System.Drawing.Point(365, 243);
-            this.buttCancel.Name = "buttCancel";
-            this.buttCancel.Size = new System.Drawing.Size(166, 36);
-            this.buttCancel.TabIndex = 17;
-            this.buttCancel.Text = "Cancel";
-            this.buttCancel.UseVisualStyleBackColor = true;
-            this.buttCancel.Click += new System.EventHandler(this.buttCancel_Click);
+            this.buttClose.Location = new System.Drawing.Point(365, 250);
+            this.buttClose.Name = "buttClose";
+            this.buttClose.Size = new System.Drawing.Size(180, 36);
+            this.buttClose.TabIndex = 17;
+            this.buttClose.Text = "Close";
+            this.buttClose.UseVisualStyleBackColor = true;
+            this.buttClose.Click += new System.EventHandler(this.buttClose_Click);
+            // 
+            // lblLastCheck
+            // 
+            this.lblLastCheck.AutoSize = true;
+            this.lblLastCheck.Location = new System.Drawing.Point(165, 180);
+            this.lblLastCheck.Name = "lblLastCheck";
+            this.lblLastCheck.Size = new System.Drawing.Size(63, 13);
+            this.lblLastCheck.TabIndex = 18;
+            this.lblLastCheck.Text = "Last check:";
+            // 
+            // buttCheckForUpdates
+            // 
+            this.buttCheckForUpdates.Location = new System.Drawing.Point(168, 196);
+            this.buttCheckForUpdates.Name = "buttCheckForUpdates";
+            this.buttCheckForUpdates.Size = new System.Drawing.Size(180, 36);
+            this.buttCheckForUpdates.TabIndex = 19;
+            this.buttCheckForUpdates.Text = "Save and Check for Updates";
+            this.buttCheckForUpdates.UseVisualStyleBackColor = true;
+            this.buttCheckForUpdates.Click += new System.EventHandler(this.buttCheckForUpdates_Click);
             // 
             // UpdateConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(608, 339);
-            this.Controls.Add(this.buttCancel);
+            this.ClientSize = new System.Drawing.Size(608, 324);
+            this.Controls.Add(this.buttCheckForUpdates);
+            this.Controls.Add(this.lblLastCheck);
+            this.Controls.Add(this.buttClose);
             this.Controls.Add(this.buttSave);
             this.Controls.Add(this.chkShowChangelog);
             this.Controls.Add(this.lblUpdateNotifications);
@@ -148,6 +171,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TrackBar trackUpdate;
         private System.Windows.Forms.Button buttSave;
-        private System.Windows.Forms.Button buttCancel;
+        private System.Windows.Forms.Button buttClose;
+        private System.Windows.Forms.Label lblLastCheck;
+        private System.Windows.Forms.Button buttCheckForUpdates;
     }
 }
