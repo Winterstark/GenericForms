@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using GenericForms;
 using System.IO;
+using GenericForms;
 
 namespace GenericFormsDEMO
 {
@@ -51,7 +51,7 @@ namespace GenericFormsDEMO
                     MessageBox.Show("Update will not succeed because another update took place less than a day ago." + Environment.NewLine + "If you don't want to wait that long delete \"updateConfig.txt\".");
                 file.Close();
             }
-
+            
             Updater.Update(VERSION, UPDATE_URL);
         }
 
