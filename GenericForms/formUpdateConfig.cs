@@ -112,6 +112,7 @@ namespace GenericForms
 
         private void trackUpdate_Scroll(object sender, EventArgs e)
         {
+            refreshUpdateNotifLabel();
             checkForChanges();
         }
 
