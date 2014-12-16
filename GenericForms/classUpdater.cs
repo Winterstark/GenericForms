@@ -130,6 +130,11 @@ namespace GenericForms
                         link = getTaggedData(ref update, "FILE");
                     }
                 }
+                else
+                {
+                    SaveConfig(false, true, "");
+                    return;
+                }
 
                 update = getUpdateInformation(ref pg);
             }
