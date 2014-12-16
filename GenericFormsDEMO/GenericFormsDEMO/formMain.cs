@@ -60,6 +60,7 @@ namespace GenericFormsDEMO
             if (updateConfig == null || updateConfig.IsDisposed)
             {
                 updateConfig = new UpdateConfig();
+                updateConfig.CurrentVersion = VERSION;
                 updateConfig.DefaultUpdateURL = UPDATE_URL;
                 updateConfig.Show();
             }
